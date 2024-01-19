@@ -1,14 +1,18 @@
-def update_price(flower_bulbs, flower, new_price):
-    flower_bulbs[flower] = round(new_price, 2)
+# This function updates the price of a specific flower in the flower_bulbs dictionary
+def update_price(flower_bulbs, flower, new_price) -> dict:
+    flower_bulbs[flower] = new_price
     return flower_bulbs
 
-def add_to_order(order, flower, quantity):
+# This function adds a flower and its quantity to the order dictionary
+def add_to_order(order, flower, quantity) -> dict:
     order[flower] = quantity
     return order
 
-def calculate_subtotal(quantity, price_per_bulb):
+# This function calculates the subtotal for a given quantity of bulbs and their price per bulb
+def calculate_subtotal(quantity, price_per_bulb) -> float:
     return quantity * price_per_bulb
 
+# This function prints the order of bulbs, including the bulb code, quantity, and subtotal for each type of bulb
 def print_order(order_of_bulbs, order, flower_bulbs):
     print("You have purchased the following bulbs:") 
     for bulb_name in order_of_bulbs:
@@ -19,6 +23,7 @@ def print_order(order_of_bulbs, order, flower_bulbs):
             subtotal = calculate_subtotal(quantity, price_per_bulb)
             print(f"{bulb_code} * {quantity:4} = $ {subtotal:.2f}")
 
+# This function calculates and prints the total number of bulbs and the total cost of the order
 def calculate_total(order, flower_bulbs):
     total_bulbs = sum(order.values())
     total_cost = 0
@@ -27,6 +32,7 @@ def calculate_total(order, flower_bulbs):
     print(f"Thank you for purchasing {total_bulbs} bulbs from Bluebell Greenhouses.")
     print(f"Your total comes to $ {total_cost:6.2f}")
 
+# The main function initializes the flower_bulbs and mary_order dictionaries, updates the prices and orders, and then prints the order and calculates the total
 def main():
     flower_bulbs = {
         'daffodil': 0.35,
@@ -42,8 +48,8 @@ def main():
     }
 
     # Update prices and orders
-    flower_bulbs = update_price(flower_bulbs, 'tulip', flower_bulbs['tulip'] * 1.25)
-    mary_order = add_to_order(mary_order, 'hyacinth', 30)
+    flower_bulbs = update_price(flower_bulbs, 'tulip', flower_bulbs['tulip'] * 1.25) #sends, (dictionary, key, value) to update_price function and returns the updated dictionary
+    mary_order = add_to_order(mary_order, 'hyacinth', 30) #sends, (dictionary, key, value) to add_to_order function and returns the updated dictionary
 
     # Print order and calculate total
     order_of_bulbs = ['crocus', 'daffodil', 'bluebell', 'hyacinth', 'tulip']

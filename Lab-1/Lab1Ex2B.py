@@ -1,6 +1,6 @@
 # Read the earthquake data from the file
 with open('earthquake.txt', 'r') as file:
-    earthquake_data = file.readlines()
+    earthquake_data = file.readlines() # readlines will read the file line by line and return a list of lines
 
 # Create a dictionary to store the earthquake data by region
 earthquake_dict = {}
@@ -27,5 +27,5 @@ with open('earthquakefmt.txt', 'w') as file:
     for region, data in earthquake_dict.items():
         file.write(f'[{region.upper()}, ')
         for item in data:
-            file.write(f'[{item[0]}, {item[1]}], ')
+            file.write(f'[{item[0]}, {item[1]}]')
         file.write(']\n')
