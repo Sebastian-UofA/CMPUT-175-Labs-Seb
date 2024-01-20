@@ -49,8 +49,8 @@ def main():
 
     # Update prices and orders
     updated_tulip_price = flower_bulbs['tulip'] * 1.25
-    flower_bulbs = update_price(flower_bulbs, 'tulip', round(updated_tulip_price, 2))
-    mary_order = add_to_order(mary_order, 'hyacinth', 30)
+    flower_bulbs = update_price(flower_bulbs, 'tulip', round(updated_tulip_price, 2)) # sends, (dictionary, key, value) to update_price function and returns the updated dictionary
+    mary_order = add_to_order(mary_order, 'hyacinth', 30) # sends, (dictionary, key, value) to add_to_order function and returns the updated dictionary
 
     # Print order and calculate total
     order_of_bulbs = ['crocus', 'daffodil', 'bluebell', 'hyacinth', 'tulip']
