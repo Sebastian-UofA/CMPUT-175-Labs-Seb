@@ -19,9 +19,9 @@ def print_order(order_of_bulbs, order, flower_bulbs):
         if bulb_name in order:
             bulb_code = bulb_name[:3].upper()
             quantity = order[bulb_name]
-            price_per_bulb = flower_bulbs[bulb_name]
-            subtotal = calculate_subtotal(quantity, price_per_bulb)
-            print(f"{bulb_code} * {quantity:4} = $ {subtotal:.2f}")
+            price_of_individualbulb = flower_bulbs[bulb_name]
+            subtotal = calculate_subtotal(quantity, price_of_individualbulb)
+            print(f"{bulb_code:<5} *{quantity:>4} = ${subtotal:>6.2f}")
 
 # This function calculates and prints the total number of bulbs and the total cost of the order
 def calculate_total(order, flower_bulbs):
@@ -30,7 +30,7 @@ def calculate_total(order, flower_bulbs):
     for bulb in order:
         total_cost += order[bulb] * flower_bulbs[bulb]
     print(f"Thank you for purchasing {total_bulbs} bulbs from Bluebell Greenhouses.")
-    print(f"Your total comes to $ {total_cost:6.2f}")
+    print(f"Your total comes to ${total_cost:6.2f}")
 
 # The main function initializes the flower_bulbs and mary_order dictionaries, updates the prices and orders, and then prints the order and calculates the total
 def main():
@@ -48,8 +48,9 @@ def main():
     }
 
     # Update prices and orders
-    flower_bulbs = update_price(flower_bulbs, 'tulip', flower_bulbs['tulip'] * 1.25) #sends, (dictionary, key, value) to update_price function and returns the updated dictionary
-    mary_order = add_to_order(mary_order, 'hyacinth', 30) #sends, (dictionary, key, value) to add_to_order function and returns the updated dictionary
+    updated_tulip_price = flower_bulbs['tulip'] * 1.25
+    flower_bulbs = update_price(flower_bulbs, 'tulip', round(updated_tulip_price, 2))
+    mary_order = add_to_order(mary_order, 'hyacinth', 30)
 
     # Print order and calculate total
     order_of_bulbs = ['crocus', 'daffodil', 'bluebell', 'hyacinth', 'tulip']

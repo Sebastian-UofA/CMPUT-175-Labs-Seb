@@ -10,7 +10,7 @@ for line in earthquake_data:
     # Split the line into individual data elements
     elements = line.split()
 
-    # Extract the region, magnitude, and date from the elements
+    # Extract the (region name, magnitude, date) from the data file
     region = elements[-1]
     magnitude = elements[0]
     date = elements[1]
@@ -21,11 +21,9 @@ for line in earthquake_data:
     else:
         earthquake_dict[region] = [[date, magnitude]]
 
-# Write the earthquake data to the output file
-# Write the earthquake data to the output file
 with open('earthquakefmt.txt', 'w') as file:
     for region, data in earthquake_dict.items():
-        file.write(f'[{region.upper()}, ')
+        file.write(f'[{region.upper()}')
         for item in data:
-            file.write(f'[{item[0]}, {item[1]}]')
+            file.write(f', [{item[0]}, {item[1]}]')
         file.write(']\n')
