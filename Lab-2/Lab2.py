@@ -33,8 +33,8 @@ def decrypt(filename):
         for letters in words:
             if letters.isalpha():
                 # Decrypt the letter using the cipher key
-                decrypted_char = chr((ord(letters.lower()) - ord('a') - shift) % 26 + ord('a')) # ord() returns the ASCII value of a character and is subtracted by ord('a') to get alphabet position then subtracted by shift value
-                decrypted_word += decrypted_char  #add new letters to empty string              # % 26 is used to wrap around the alphabet and ord('a') is added to get the ASCII value of the decrypted character
+                decrypted_letter = chr((ord(letters.lower()) - ord('a') - shift) % 26 + ord('a')) # ord() returns the ASCII value of a character and is subtracted by ord('a') to get alphabet position then subtracted by shift value
+                decrypted_word += decrypted_letter  #add new letters to empty string              # % 26 is used to wrap around the alphabet and ord('a') is added to get the ASCII value of the decrypted character
         decrypted_words.append(decrypted_word) #add decrypted words to list
 
     decrypted_message = " ".join(decrypted_words) #join words in list with spaces
