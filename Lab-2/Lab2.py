@@ -29,7 +29,7 @@ def decrypt(filename):
 
     decrypted_words = [] # Create an empty list to store the decrypted words
     for words in encrypted_message.split(): # Splits words separated by spaces into a list
-        decrypted_word = "" #stores words 
+        decrypted_word = "" # stores current words 
         for letters in words:
             if letters.isalpha():
                 # Decrypt the letter using the cipher key
