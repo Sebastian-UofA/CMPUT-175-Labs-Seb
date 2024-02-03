@@ -1,9 +1,9 @@
 #----------------------------------------------------
 # Lab 3: Numerical Tic Tac Toe class
 # 
-# Author: 
+# Author: Sebastian Perez
 # Collaborators:
-# References:
+# References: https://docs.python.org/3/tutorial/classes.html
 #----------------------------------------------------
 
 class NumTicTacToe:
