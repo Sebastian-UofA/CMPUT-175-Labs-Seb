@@ -63,7 +63,6 @@ class NumTicTacToe:
            col (int) - column index of square to check
         Returns: True if square is empty; False otherwise
         '''
-        # TO DO: delete pass and complete method
         return self.board[row][col] == 0
     
     
@@ -77,7 +76,6 @@ class NumTicTacToe:
            num (int) - entry to place in square
         Returns: True if attempted update was successful; False otherwise
         '''
-        # TO DO: delete pass and complete method
         if self.squareIsEmpty(row, col):
             self.board[row][col] = num
             return True
@@ -91,7 +89,6 @@ class NumTicTacToe:
         Inputs: none
         Returns: True if the board has no empty squares (full); False otherwise
         '''
-        # TO DO: delete pass and complete method
         for i in range(self.size):
             for j in range(self.size):
                 if self.squareIsEmpty(i, j):
@@ -108,13 +105,17 @@ class NumTicTacToe:
         Returns: True if current player has won with their most recent move; 
                  False otherwise
         '''
-        # TO DO: delete pass and complete method
-        for i in range(3):
-            if sum(self.board[i]) == 15 or sum(self.board[j][i] for j in range(3)) == 15:
+        #checks the rows and columns of the grid
+        for i in range(self.size):
+            # checks sum of row = 15    or   sum of column = 15
+            if sum(self.board[i]) == 15 or sum(self.board[j][i] for j in range(self.size)) == 15:
                 return True
-        if self.board[0][0] + self.board[1][1] + self.board[2][2] == 15 or \
-                self.board[0][2] + self.board[1][1] + self.board[2][0] == 15:
+
+        #checks the diagonals of the grid
+        # If the sum of the main diagonal = 15 ->>> return True      checks the other diagonal 
+        if sum(self.board[i][i] for i in range(self.size)) == 15 or sum(self.board[i][self.size - i - 1] for i in range(self.size)) == 15:
             return True
+
         return False
      
 
@@ -133,6 +134,7 @@ if __name__ == "__main__":
     myBoard.drawBoard()
 
     # try to assign a number to a non-empty square. What happens?
+    print("Space is already ocupied")
     print(myBoard.update(1, 1, 3))  # Should be False, square already taken
     myBoard.drawBoard()
 
@@ -141,6 +143,7 @@ if __name__ == "__main__":
     print(myBoard.isWinner())  # Should be False
 
     # check if the board is full. Should it be full after only 1 entry?
+    myBoard.drawBoard()
     print("\nTest boardFull method:")
     print(myBoard.boardFull())  # Should be False
 
@@ -155,9 +158,53 @@ if __name__ == "__main__":
     print(myBoard.isWinner())  # Should be True
 
     # check if the board is full
-    print("\nTest boardFull method:")
+    myBoard.drawBoard()
+    print("\nTest boardFull method (not full):")
     print(myBoard.boardFull())  # Should be False
 
-    # write additional tests, as needed
+    myBoard = NumTicTacToe()
+    myBoard.update(0, 0, 5)
+    myBoard.update(0, 1, 3)
+    myBoard.update(0, 2, 7)
+    myBoard.update(1, 0, 4)
+    myBoard.update(1, 1, 6)
+    myBoard.update(1, 2, 8)
+    myBoard.update(2, 0, 1)
+    myBoard.update(2, 1, 9)
+    myBoard.update(2, 2, 2)
+    myBoard.drawBoard()
+    print("\nTest boardFull method (full):")
+    print(myBoard.boardFull()) # Should be True
 
+    # write additional tests, as needed
+    myBoard = NumTicTacToe()
+    myBoard.update(0, 0, 5)
+    myBoard.update(0, 1, 3)
+    myBoard.update(0, 2, 7)
+    myBoard.drawBoard()
+    print("\nTest isWinner method (horizonatal):")
+    print(myBoard.isWinner())  # Should be True
+
+    myBoard = NumTicTacToe()
+    myBoard.update(0, 0, 5)
+    myBoard.update(1, 1, 3)
+    myBoard.update(2, 2, 7)
+    myBoard.drawBoard()
+    print("\nTest isWinner method (diagonal):")
+    print(myBoard.isWinner())  # Should be True
+
+    myBoard = NumTicTacToe()
+    myBoard.update(0, 2, 5)
+    myBoard.update(1, 1, 3)
+    myBoard.update(2, 0, 7)
+    myBoard.drawBoard()
+    print("\nTest isWinner method (diagonal):")
+    print(myBoard.isWinner())  # Should be True
     
+    myBoard = NumTicTacToe()
+    myBoard.update(0, 2, 5)
+    myBoard.update(1, 2, 3)
+    myBoard.update(2, 2, 7)
+    myBoard.drawBoard()
+    print("\nTest isWinner method (vertical):")
+    print(myBoard.isWinner())  # Should be True
