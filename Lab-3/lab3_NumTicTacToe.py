@@ -40,19 +40,19 @@ class NumTicTacToe:
         #   -----------
         # 2    |   |           
         
-        print("\n   0   1   2")
-        for i in range(3):
-            print(i, end=" ")
+        print("\n   0   1   2") #prints the column index
+        for i in range(3): 
+            print(i, end=" ") #prints the row without newline
             for j in range(3):
-                if self.board[i][j] != 0:
-                    print(" ", self.board[i][j], end=" ")
+                if self.board[i][j] != 0: #if the square is not empty
+                    print(" ", self.board[i][j], end=" ") #print the number
                 else:
-                    print("   ", end="")
+                    print("   ", end="") #print empty square
                 if j != 2:
-                    print("|", end="")
+                    print("|", end="") #print the vertical line if not at the last column
             print()
             if i != 2:
-                print("  -----------")
+                print("  -----------") #print the horizontal line if not at the last row
 
     def squareIsEmpty(self, row, col):
         '''
@@ -63,7 +63,7 @@ class NumTicTacToe:
            col (int) - column index of square to check
         Returns: True if square is empty; False otherwise
         '''
-        return self.board[row][col] == 0
+        return self.board[row][col] == 0 # if all the squares are empty, the board is empty
     
     
     def update(self, row, col, num):
@@ -71,15 +71,19 @@ class NumTicTacToe:
         Assigns the integer, num, to the board at the provided row and column, 
         but only if that square is empty.
         Inputs:
-           row (int) - row index of square to update
-           col (int) - column index of square to update
-           num (int) - entry to place in square
+        row (int) - row index of square to update
+        col (int) - column index of square to update
+        num (int) - entry to place in square
         Returns: True if attempted update was successful; False otherwise
         '''
+
+        # Check if the square at the given row and column is empty
         if self.squareIsEmpty(row, col):
+            # If it is, update the square with the given number and return True
             self.board[row][col] = num
             return True
         else:
+            # If the square is not empty, return False
             return False
     
     
@@ -109,7 +113,7 @@ class NumTicTacToe:
         for i in range(self.size):
             # checks sum of row = 15    or   sum of column = 15
             if sum(self.board[i]) == 15 or sum(self.board[j][i] for j in range(self.size)) == 15:
-                return True
+                return True #  True = current player has won
 
         #checks the diagonals of the grid
         # If the sum of the main diagonal = 15 ->>> return True      checks the other diagonal 
