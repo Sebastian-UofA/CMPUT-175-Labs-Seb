@@ -1,8 +1,8 @@
 #----------------------------------------------------
 # Lab 4: Web browser simulator
-# Purpose of program:
+# Purpose of program: Simulate a web browser by allowing the user to enter a URL, go back, go forward, or quit the program.
 #
-# Author: 
+# Author: Sebastian Perez
 # Collaborators/references:
 #----------------------------------------------------
 
