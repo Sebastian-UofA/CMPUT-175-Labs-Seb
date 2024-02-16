@@ -74,7 +74,7 @@ def goBack(current, bck, fwd):
     
     except Exception as e:
         print(e)
-        print("Error: No webpages stored in the back history.")
+        print("Cannnot go back.")
         return current
 
 
@@ -105,7 +105,7 @@ def goForward(current, bck, fwd):
     
     except Exception as e:
         print(e)
-        print("Error: Unable to go forward. No webpages stored in the forward history.")
+        print("Cannot go forward.")
         return current
 
 def main():
