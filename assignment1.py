@@ -21,8 +21,7 @@ def read_sales(filename2):
         next(file)  # Skip header
         for line in file:
             transaction_ID, date, product_ID, quantity, discount = line.strip().split(',')
-            sales[transaction_ID] = {'date': date, 'product_id': product_ID, 'quantity': int(quantity),
-                                     'discount': float(discount)}
+            sales[transaction_ID] = {'date': date, 'product_id': product_ID, 'quantity': int(quantity),'discount': float(discount)}
     return sales
 
 def read_returns(filename3):
