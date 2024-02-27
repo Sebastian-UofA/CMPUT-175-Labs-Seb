@@ -36,7 +36,7 @@ def goToNewSite(current, bck, fwd):
     # Prompt user for new site
     newsite = input('URL: ')
         
-    # Eliminate all forward pages of the current page
+    # Eliminate all forward pages of the current page (loop continues until the fwd stack is empty)
     while not fwd.isEmpty():
         fwd.pop()
         

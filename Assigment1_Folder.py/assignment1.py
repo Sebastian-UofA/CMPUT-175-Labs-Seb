@@ -1,3 +1,9 @@
+# author: Sebastian Perez
+# References: 
+# https://www.geeksforgeeks.org/python-program-to-find-the-highest-3-values-in-a-dictionary/
+# https://www.w3schools.com/python/python_datetime.asp
+
+
 import datetime
 
 def read_products(filename1):
@@ -15,8 +21,7 @@ def read_sales(filename2):
         next(file)  # Skip header
         for line in file:
             transaction_ID, date, product_ID, quantity, discount = line.strip().split(',')
-            sales[transaction_ID] = {'date': date, 'product_id': product_ID, 'quantity': int(quantity),
-                                     'discount': float(discount)}
+            sales[transaction_ID] = {'date': date, 'product_id': product_ID, 'quantity': int(quantity),'discount': float(discount)}
     return sales
 
 def read_returns(filename3):
@@ -30,7 +35,9 @@ def read_returns(filename3):
 
 def top_units_sold(products, sales, returns):
     net_units_sold = {}
-    for transaction_ID, transation_details in sales.items(): # Loop through sales dictionary key = transaction_ID, value = transation_details (this is another dictoinary)
+    # Loop through sales dictionary key = transaction_ID, value = transation_details (this is another dictoinary)
+    for transaction_ID, transation_details in sales.items(): 
+        # account for returned items
         if transaction_ID not in returns:
             product_ID = transation_details['product_id']
             quantity = transation_details['quantity']
@@ -44,7 +51,7 @@ def top_units_sold(products, sales, returns):
 
     for product_ID, quantity in top_3_products:
         product_name = products[product_ID]['name']
-        print('{:>20} {:>3}'.format(product_name, quantity))
+        print(f"{product_name:>20} {quantity:>3}")
 
 def top_product_sales(products, sales, returns):
     net_sales = {}
@@ -52,42 +59,48 @@ def top_product_sales(products, sales, returns):
         if transaction_ID not in returns:
             product_ID = transation_details['product_id']
             quantity = transation_details['quantity']
+            discount = transation_details['discount']
             price = products[product_ID]['price']
             if product_ID in net_sales:
-                net_sales[product_ID] += quantity * price
+                net_sales[product_ID] += int(quantity) * price * (1 - discount / 100)
             else:
-                net_sales[product_ID] = quantity * price
+                net_sales[product_ID] = int(quantity) * int(price) * (1 - discount / 100)
     
     top_3_sales = sorted(net_sales.items(), key=lambda x: x[1], reverse=True)[:3] # sort the dictionary by value in descending order and take the first 3 items x = item, x[1] = value, reverse = True to sort in descending order
 
     for product_ID, total_sales in top_3_sales:
         product_name = products[product_ID]['name']
-        amount_formatted = "${:,.2f}".format(total_sales)  # Format the amount with comma separator for thousands and two decimal places
-        print("{:>20} {:>10}".format(product_name, amount_formatted))
+        amount_formatted = f"${total_sales:,.2f}"  # Format the amount with comma separator for thousands and two decimal places
+        print(f"{product_name:>20} {amount_formatted:>10}")
 
-def turnover_table(products, sales, returns):
-    
+def print_table_border():
+    print("+---+--------------------+---+-----------+------+-----------+")
+
+def calculate_product_stats(products, sales, returns):
     product_stats = {}
-    for product_id, product_details in products.items(): # Loop through products dictionary key = product_id, value = product_details (this is another dictionnary)
+    DISCOUNT_DIVISOR = 100
+
+    for product_id, product_details in products.items():
         total_units_sold = 0
         total_sales_amount = 0
         total_discounts = 0
         total_discounted_amount = 0
         total_transactions = 0
-        
-        for sale_id, sale_details in sales.items(): # Loop through sales dictionary key = sale_id, value = sale_info (this is another dictionary)
-            if sale_details['product_id'] == product_id and sale_id not in returns: # check if product_id is equal to product_id and sale_id is not in returns dictionary
-                total_units_sold += sale_details['quantity']
-                total_sales_amount += sale_details['quantity'] * product_details['price']
-                total_discounts += sale_details['discount']
-                total_discounted_amount += sale_details['quantity'] * product_details['price'] * (1 - sale_details['discount'] / 100)
+
+        for sale_id, sale_details in sales.items():
+            if sale_details['product_id'] == product_id and sale_id not in returns:
+                quantity = sale_details['quantity']
+                discount = sale_details['discount']
+                price = product_details['price']
+
+                total_units_sold += quantity
+                total_sales_amount += quantity * price * (1 - discount / DISCOUNT_DIVISOR)
+                total_discounts += discount
+                total_discounted_amount += price * discount 
                 total_transactions += 1
-        
-        if total_transactions > 0:
-            average_discount = total_discounts / total_transactions
-        else:
-            average_discount = 0
-        
+
+        average_discount = total_discounts / total_transactions if total_transactions > 0 else 0
+
         product_stats[product_id] = { 
             'name': product_details['name'],
             'total_units_sold': total_units_sold,
@@ -95,34 +108,27 @@ def turnover_table(products, sales, returns):
             'average_discount': average_discount,
             'total_discounted_amount': total_discounted_amount
         }
+
+    return product_stats
+
+def print_turnover_table(product_stats):
+    print_table_border()
+    print(f"|{'ID':<3}|{'Product Name':<20}|{'Units':<3}|{'Sales':<11}|{'Disc.':<6}|{'Disc. Amt':<11}|")
+    print_table_border()
+
+    sorted_product_stats = sorted(product_stats.items(), key=lambda x: x[1]['total_discounted_amount'], reverse=True)
     
-    # prints out the header for the table
-    print("+---+--------------------+---+-----------+------+-----------+")
-    print("|{:<3}|{:<20}|{:<3}|{:<11}|{:<6}|{:<11}|".format("ID", "Product Name", "Units", "Sales", "Disc.", "Disc. Amt"))
-    print("+---+--------------------+---+-----------+------+-----------+")
-    
-    # Print each row with frame characters (repeats step for every product in the product_stats dictionary sorted in reverse by the total discounted amount) 
-    for product_id, stat_details in sorted(product_stats.items(), key=lambda x: x[1]['total_discounted_amount'], reverse=True):
+    for product_id, stat_details in sorted_product_stats:
         product_name = stat_details['name']
         total_units_sold = stat_details['total_units_sold']
-        total_sales_amount = stat_details['total_sales_amount']
-        average_discount = stat_details['average_discount']
-        total_discounted_amount = stat_details['total_discounted_amount']
+        total_sales_amount = f'${stat_details["total_sales_amount"]:>10,.2f}'
+        average_discount = f'{stat_details["average_discount"]:06.2f}%'
+        total_discounted_amount = f'${stat_details["total_discounted_amount"]:>10,.2f}'
         
-        # Format the values according to the given formatting
-        formatted_total_sales_amount = '${:>10,.2f}'.format(total_sales_amount)
-        formatted_average_discount = '{:06.2f}%'.format(average_discount)
-        formatted_total_discounted_amount = '${:>10,.2f}'.format(total_discounted_amount)
-        
-        # Print the row line
-        print("+---+--------------------+---+-----------+------+-----------+")
-        print("|{:<3}|{:<20}|{:>3}|{}|{}|{}|".format(
-            product_id, product_name, total_units_sold, 
-            formatted_total_sales_amount, formatted_average_discount, formatted_total_discounted_amount))
+        print_table_border()
+        print(f"|{product_id:<3}|{product_name:<20}|{total_units_sold:>3}|{total_sales_amount}|{average_discount}|{total_discounted_amount}|")
     
-    # Print last line of the table
-    print("+---+--------------------+---+-----------+------+-----------+")
-
+    print_table_border()
 def transactions_by_weekday(sales, returns):
     weekday_transactions = {
         'Monday': 0,
@@ -143,11 +149,12 @@ def transactions_by_weekday(sales, returns):
     # Print transaction for every weekday
     print("Number of Transactions per Weekday:")
     for weekday, value in weekday_transactions.items():
-        print("{:<9}:{:>3}".format(weekday, value))
+        print(f"{weekday:<9}:{value:>3}")
 
 def returned_products(products, sales, returns):
     returned_products = {}
     for transaction_ID, return_details in returns.items():
+        # if transaction_ID is in returns, check for its presence in sales 
         if transaction_ID in sales:
             product_ID = sales[transaction_ID]['product_id']
             if product_ID in returned_products:
@@ -159,7 +166,7 @@ def returned_products(products, sales, returns):
     print("Number of Returned Products:")
     for product_ID, count in returned_products.items():
         product_name = products[product_ID]['name']
-        print("{:<3} {:<20} {:>3}".format(product_ID, product_name, count))
+        print(f"{product_ID:<3} {product_name:<20} {count:>3}")
 
 def record_product_performance(products, sales, returns):
     with open("transactions_units.txt", "w") as file:
@@ -181,7 +188,7 @@ def main():
     print('-'*50)
     top_product_sales(products, sales, returns)
     print()
-    turnover_table(products, sales, returns)
+    print_turnover_table(calculate_product_stats(products, sales, returns))
     print()
     transactions_by_weekday(sales, returns)
     print('-'*50)
