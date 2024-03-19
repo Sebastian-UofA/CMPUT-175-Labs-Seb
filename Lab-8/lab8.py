@@ -2,10 +2,10 @@ def mylen(some_list):
     '''
     This function takes a list as an argument and returns the length of the list. 0 if the list is empty.
     '''
-    if not some_list:
+    if not some_list: # if the list is empty
         return 0
-    else:
-        return 1 + mylen(some_list[1:])
+    else:         
+        return 1 + mylen(some_list[1:]) # recursivly call the function and add one for every element in the list
     
 def intdivision(divident, divisor):
     '''
@@ -17,38 +17,38 @@ def intdivision(divident, divisor):
     If the divident is less than the divisor, the function returns 0.
     
     '''
-    if not isinstance(divident, int) or not isinstance(divisor, int) or divident < 0 or divisor <= 0:
+    if not isinstance(divident, int) or not isinstance(divisor, int) or divident < 0 or divisor <= 0: # if divident or divisor is not an integer or if divident is negative or if divisor is less than or equal to 0
         raise ValueError("Invalid inputs. Dividend and divisor must be positive integers.")
-    elif divident < divisor:
+    elif divident < divisor: # if divident is less than divisor
         return 0
     else:
-        return 1 + intdivision(divident - divisor, divisor)
+        return 1 + intdivision(divident - divisor, divisor) # recursivly call the function and add one for every time the divisor can be subtracted from the divident
     
 def sumDigits(some_num):
     '''
     This function takes an integer as an argument and returns the sum of its digits.
     if non integer or negative integer is entered, it raises a ValueError.
     '''
-    if not isinstance(some_num, int) or some_num <= 0:
+    if not isinstance(some_num, int) or some_num <= 0: # if some_num is not an integer or if some_num is negative
         raise ValueError("Invalid input. Number must be a positive integer.")
-    elif len(str(some_num)) == 1:
+    elif len(str(some_num)) == 1: # if some_num is a single digit
         return some_num
     else:
-        return some_num % 10 + sumDigits(some_num // 10)
+        return some_num % 10 + sumDigits(some_num // 10) # recursivly call the function and add the last digit of some_num to the sum of the rest of the digits
 
 def reverseDisplay(some_num):
     '''
     This function takes an integer as an argument and displays its digits in reverse order.
     if non integer or negative integer is entered, it raises a ValueError.
     '''
-    if not isinstance(some_num, int) or some_num <= 0:
+    if not isinstance(some_num, int) or some_num <= 0: # if some_num is not an integer or if some_num is negative
         raise ValueError("Invalid input. Number must be a positive integer.")
     else:
         some_num = str(some_num)
-        if len(some_num) < 2:
+        if len(some_num) < 2: # if some_num is a single digit
             return int(some_num)
         else:
-            return int(some_num[-1] + str(reverseDisplay(int(some_num[:-1]))))
+            return int(some_num[-1] + str(reverseDisplay(int(some_num[:-1])))) # recursivly call the function and add the last digit of some_num to the rest of the digits in reverse order
 
 def binary_search2(key, alist, low, high):
     '''
