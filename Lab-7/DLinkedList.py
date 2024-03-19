@@ -213,8 +213,7 @@ class DLinkedList:
         return data
 
     def searchLarger(self, item):
-        # returns the position of the first occurrence of an item larger than the provided item
-        # TODO
+    # returns the position of the first element that is larger than the item, or -1 if there is no larger item
         current = self.__head
         index = 0
         while current != None:
