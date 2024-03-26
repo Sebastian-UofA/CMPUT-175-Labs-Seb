@@ -15,7 +15,7 @@ def recursive_selection_sort(data, data_len, index = 0):
     for i in range(index + 1, data_len):
         if data[i] > data[max_index]:
             max_index = i
-    # Swap maximum value with the element at the current index
+    # Swap maximum value with the element at the current index (0 1 ....)
     data[index], data[max_index] = data[max_index], data[index]
     # Recursively calling selection sort function
     recursive_selection_sort(data, data_len, index + 1)
