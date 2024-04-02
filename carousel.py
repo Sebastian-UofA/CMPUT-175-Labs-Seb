@@ -29,6 +29,20 @@ def emoji_dict(json_data):
 def get_emoji(emoji_name, emoji_dict):
     return emoji_dict.get(emoji_name, "Emoji not found")
 
+def find_object(emoji_dict):
+    '''
+    A function to find the object to be added to the circular doubly-linked list.  
+    '''
+    print('What do you want to add?')
+    emoji_name = input()
+    emoji = get_emoji(emoji_name, emoji_dict)
+    if emoji == "Emoji not found":
+        print(emoji)
+        time.sleep(1)
+        clear_screen()
+        return None
+    return emoji
+
 
 def new_node(carousel, emoji_dict, carousel_capacity, art_frame):
     '''
@@ -36,7 +50,7 @@ def new_node(carousel, emoji_dict, carousel_capacity, art_frame):
     '''
     if carousel.get_size() >= carousel_capacity:
         print('The carousel is at full capacity. Please delete a frame before adding a new one.')
-        return
+        return 
 
     emoji = find_object(emoji_dict)
     if emoji == None:
@@ -87,17 +101,6 @@ def delete_node():
     '''
     pass
 
-def find_object(emoji_dict):
-    '''
-    A function to find the object to be added to the circular doubly-linked list.  
-    '''
-    print('What do you want to add?')
-    emoji_name = input()
-    emoji = get_emoji(emoji_name, emoji_dict)
-    if emoji == "Emoji not found":
-        print(emoji)
-        return None
-    return emoji
 
 def traverse_left(carousel, art_frame):
     '''
@@ -154,6 +157,8 @@ def get_input(carousel):
             print("Invalid entry. Please enter a valid command.")
             time.sleep(1)
             clear_screen()  # Clear the screen and prompt again
+            return None
+        
 
     return user_input
 
@@ -209,6 +214,7 @@ def main():
             elif action == 'Q':
                 quit_program = True  # Set the flag to True to exit the loop
         except Exception as e:
+            carousel_display(carousel, art_frame)  # Display the carousel again
             print(e)
 
 # Run the main function if this file is the entry point

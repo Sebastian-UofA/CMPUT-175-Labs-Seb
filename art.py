@@ -9,7 +9,7 @@ class Art:
  __________    |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|    __________
            |   |                            |   |          
            |   |                            |   |          
- <>        |   |             ()             |   |        (())
+ <>        |   |             ()             |   |        ,.
            |   |                            |   |          
  __________|   |                            |   |__________
                |____________________________|
@@ -145,7 +145,7 @@ class Art:
         # Assuming your art frame string has unique placeholders for previous, current, and next emojis
         # For example: "<>  ()  (())"
         frame = self.art_pieces[0]
-        frame = frame.replace("<>", prev_emoji).replace("()", current_emoji).replace("(())", next_emoji)
+        frame = frame.replace("<>", prev_emoji).replace("()", current_emoji).replace(",.", next_emoji)
         print(frame)
         time.sleep(1)
 
@@ -158,7 +158,7 @@ class Art:
 
     def delete_from_multiple(self, prev_emoji, next_emoji):
         frame = self.art_pieces[2]
-        frame = frame.replace("<>", prev_emoji).replace("(())", next_emoji)
+        frame = frame.replace("<>", prev_emoji).replace("()", next_emoji)
         print(frame)
         time.sleep(1)
         self.clear_screen()
@@ -171,7 +171,7 @@ class Art:
     def move_right(self, prev_emoji, next_emoji):
         self.clear_screen()
         frame = self.art_pieces[4]
-        frame = frame.replace("<>", prev_emoji).replace("(())", next_emoji)
+        frame = frame.replace("<>", prev_emoji).replace("()", next_emoji)
         print(frame)
         time.sleep(1)
         self.clear_screen()
@@ -179,7 +179,7 @@ class Art:
     def add_right_from_multiple(self, prev_emoji, next_emoji):
         self.clear_screen()
         frame = self.art_pieces[5]
-        frame = frame.replace("<>", prev_emoji).replace("(())", next_emoji)
+        frame = frame.replace("<>", prev_emoji).replace("()", next_emoji)
         print(frame)
         time.sleep(1)
         self.clear_screen()
@@ -193,7 +193,7 @@ class Art:
     def move_left(self, prev_emoji, next_emoji):
         self.clear_screen()
         frame = self.art_pieces[7]
-        frame = frame.replace("<>", prev_emoji).replace("(())", next_emoji)
+        frame = frame.replace("<>", prev_emoji).replace("()", next_emoji)
         print(frame)
         time.sleep(1)
         self.clear_screen()
@@ -201,7 +201,7 @@ class Art:
     def add_left_from_multiple(self, prev_emoji, next_emoji):
         self.clear_screen()
         frame = self.art_pieces[8]
-        frame = frame.replace("<>", prev_emoji).replace("(())", next_emoji)
+        frame = frame.replace("<>", prev_emoji).replace("()", next_emoji)
         print(frame)
         time.sleep(1)
         self.clear_screen()

@@ -62,6 +62,8 @@ class CircularDoublyLinkedList:
             self.head.prev.next = new_node  # Link the old predecessor to the new node
             self.head.prev = new_node  # Link the current head back to the new node
         self.head = new_node  # Make the new node the current node
+        if self.head == 1:
+            self.tail = new_node.next
         self.size += 1
         
     def add_node_right(self, data):
@@ -76,8 +78,9 @@ class CircularDoublyLinkedList:
             new_node.next = self.head.next
             self.head.next.prev = new_node  # Link the old successor's previous to new node
             self.head.next = new_node  # Link the current head's next to the new node
-        if self.head == self.tail:  # If there was only one node before adding
-            self.tail = new_node
+            if self.head == self.tail:  # If there was only one node before adding
+                self.tail = new_node
+        self.head = new_node    # Make the new node the current node
         self.size += 1
 
 
