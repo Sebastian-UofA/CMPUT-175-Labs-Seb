@@ -84,16 +84,18 @@ class CircularDoublyLinkedList:
         self.size += 1
 
 
-    def remove_node(self):
+    def delete_current_node(self):
         if self.size == 0:
-            raise Exception("List is empty")
+            raise Exception("The list is already empty.")
         elif self.size == 1:
             self.head = self.tail = None
         else:
-            self.head = self.head.next
-            self.head.prev = self.tail
-            self.tail.next = self.head
+            # If there are more than one nodes
+            self.head.prev.next = self.head.next
+            self.head.next.prev = self.head.prev
+            self.head = self.head.next  # Move head to the next node
         self.size -= 1
+
 
     def get_current_node(self):
         if not self.head:
