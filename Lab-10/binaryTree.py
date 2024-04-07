@@ -152,10 +152,10 @@ def findMinKey(tree):
     '''       
     if tree is None:
         return None
-    elif tree.getLeft() is None:
+    elif tree.getLeft() is None: #  If the current node's left child is None, we've found the minimum value
         return tree.getKey()
     else:
-        return findMinKey(tree.getLeft())
+        return findMinKey(tree.getLeft()) # If the current node has a left child, the function recursively calls itself with the left child of the current node, moving closer to the minimum value.
 
 def findMaxKey(tree):
     '''
@@ -167,7 +167,7 @@ def findMaxKey(tree):
     '''       
     if tree is None:
         return None
-    elif tree.getRight() is None:
+    elif tree.getRight() is None: 
         return tree.getKey()
     else:
         return findMaxKey(tree.getRight())

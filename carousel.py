@@ -34,7 +34,7 @@ def find_object(emoji_dict):
     A function to find the object to be added to the circular doubly-linked list.  
     '''
     print('What do you want to add?')
-    emoji_name = input()
+    emoji_name = input().lower().strip()
     emoji = get_emoji(emoji_name, emoji_dict)
     if emoji == "Emoji not found":
         print(emoji)
@@ -50,6 +50,8 @@ def new_node(carousel, emoji_dict, carousel_capacity, art_frame):
     '''
     if carousel.get_size() >= carousel_capacity:
         print('The carousel is at full capacity. Please delete a frame before adding a new one.')
+        time.sleep(2)
+        clear_screen()
         return 
 
     emoji = find_object(emoji_dict)
@@ -81,25 +83,57 @@ def new_node(carousel, emoji_dict, carousel_capacity, art_frame):
             new_pos = input('On which side do you want to add the emoji frame? (left/right): ').lower()
 
         if new_pos == 'left':
-            prev_emoji = carousel.head.get_prev().get_data() if carousel.head.get_prev() else " "
+            prev_emoji = carousel.head.get_prev().get_data()
             current_emoji = carousel.head.get_data()
             # Only pass the prev_emoji and current_emoji for left addition
             art_frame.add_left_from_multiple(prev_emoji, current_emoji)  # Assuming similar pattern for left addition
             carousel.add_node_left(emoji)
             
         else:
-            prev_emoji = carousel.head.get_prev().get_data() if carousel.head.get_prev() else " "
+            prev_emoji = carousel.head.get_prev().get_data()
             current_emoji = carousel.head.get_data()
             # Only pass the prev_emoji and current_emoji for right addition
             art_frame.add_right_from_multiple(prev_emoji, current_emoji)
             carousel.add_node_right(emoji)
             
 
-def delete_node():
+def delete_node(carousel, art_frame):
     '''
-    A function that handles deleting nodes from the circular doubly-linked list. 
+    A function that handles deleting nodes from the circular doubly-linked list.
     '''
-    pass
+    if carousel.get_size() == 0:
+        print("The carousel is empty. There's nothing to delete.")
+        return
+    
+    # Proceed with deletion
+    carousel.delete_current_node()
+    
+    # Decide what to display based on the new size of the carousel
+    if carousel.get_size() == 0:
+        # The carousel is now empty
+        print("All items have been deleted from the carousel.")
+        # If you have a specific art frame for an empty carousel, display it here
+    elif carousel.get_size() == 1:
+        # Only one item left in the carousel
+        art_frame.delete_from_one()  # Adjust based on method definition
+    else:
+        # More than one item remains in the carousel
+        prev_emoji = carousel.head.get_prev().get_data()
+        next_emoji = carousel.head.get_next().get_data()
+        art_frame.delete_from_multiple(prev_emoji, next_emoji)
+
+def display_info(carousel, json_data):
+    '''
+    A function that displays information about the current node in the circular doubly-linked list.
+    '''
+    current_emoji = carousel.head.get_data()
+    for category in json_data:
+        if current_emoji in category["emojis"].values():
+            print(f'Name: {list(category["emojis"].keys())[list(category["emojis"].values()).index(current_emoji)]}')
+            print(f'Symbol: {current_emoji}')
+            print(f'Category: {category["class"]}')
+    input('Press ENTER to continue...')
+    clear_screen()
 
 
 def traverse_left(carousel, art_frame):
@@ -109,8 +143,8 @@ def traverse_left(carousel, art_frame):
     if carousel.get_size() > 0:
         # Get the emojis for the nodes before and after moving left
         carousel.move_prev()  # Move to the previous node first
-        prev_emoji = carousel.head.get_prev().get_data() if carousel.head.get_prev() else " "
-        next_emoji = carousel.head.get_next().get_data() if carousel.head.get_next() else " "
+        prev_emoji = carousel.head.get_prev().get_data()
+        next_emoji = carousel.head.get_next().get_data()
         art_frame.move_left(prev_emoji, next_emoji)  # Pass the emojis to move_left()
 
 
@@ -121,8 +155,8 @@ def traverse_right(carousel, art_frame):
     if carousel.get_size() > 0:
         # Get the emojis for the nodes before and after moving right
         carousel.move_next()  # Move to the next node first
-        prev_emoji = carousel.head.get_prev().get_data() if carousel.head.get_prev() else " "
-        next_emoji = carousel.head.get_next().get_data() if carousel.head.get_next() else " "
+        prev_emoji = carousel.head.get_prev().get_data()
+        next_emoji = carousel.head.get_next().get_data()
         art_frame.move_right(prev_emoji, next_emoji)  # Pass the emojis to move_right()
 
 def get_input(carousel):
@@ -133,23 +167,24 @@ def get_input(carousel):
     while not is_valid_input:
         if carousel.get_size() == 0:
             print('Type any of the following commands to perform the action:')
-            print('ADD: Add an emoji frame')
-            print('Q: Quit the program')
+            print('    ADD: Add an emoji frame')
+            print('    Q: Quit the program')
         elif carousel.get_size() == 1:
             print('Type any of the following commands to perform the action:')
-            print('ADD: Add an emoji frame')
-            print('DEL: Delete an emoji frame')
-            print('INFO: Retrieve info about the current frame')
-            print('Q: Quit the program')
+            print('    ADD: Add an emoji frame')
+            print('    DEL: Delete an emoji frame')
+            print('    INFO: Retrieve info about the current frame')
+            print('    Q: Quit the program')
         else:  # Assuming carousel.get_size() >= 2
             print('Type any of the following commands to perform the action:')
-            print('L: Move left')
-            print('R: Move right')
-            print('ADD: Add an emoji frame')
-            print('DEL: Delete an emoji frame')
-            print('INFO: Retrieve info about the current frame')
-            print('Q: Quit the program')
+            print('    L: Move left')
+            print('    R: Move right')
+            print('    ADD: Add an emoji frame')
+            print('    DEL: Delete an emoji frame')
+            print('    INFO: Retrieve info about the current frame')
+            print('    Q: Quit the program')
         user_input = input().upper()
+
 
         if user_input in allowed_actions:
             is_valid_input = True  # Set flag to true when valid input is received
@@ -163,8 +198,11 @@ def get_input(carousel):
     return user_input
 
 
-# Within the carousel_display function in carousel.py
 def carousel_display(carousel, art_frame):
+    '''
+    A function that displays the carousel and all the items within it at all times.
+    '''
+
     if carousel.get_size() == 0:
         # Display an empty carousel or a welcome message
         art_frame.initialization()
@@ -183,14 +221,13 @@ def carousel_display(carousel, art_frame):
 
 def main():
     emojis_data_file = load_json("emojis.json") 
-    emojis_dict = emoji_dict(emojis_data_file)  # Make sure to use a different name to not shadow the function
+    emojis_dict = emoji_dict(emojis_data_file) 
     art_frame = Art()
     carousel_capacity = 5
     carousel = CircularDoublyLinkedList(carousel_capacity)
     quit_program = False  
 
     while not quit_program:
-        # Only get input if the carousel is empty
         if carousel.get_size() == 0:
             action = get_input(carousel)
             
@@ -207,16 +244,14 @@ def main():
             elif action == 'R' and carousel.get_size() > 0:
                 traverse_right(carousel, art_frame)
             elif action == 'DEL' and carousel.get_size() > 0:
-                delete_node(carousel, art_frame)  # Make sure this function is implemented
+                delete_node(carousel, art_frame)  
             elif action == 'INFO' and carousel.get_size() > 0:
-                # Logic to show info about the current node
-                pass
+                display_info(carousel, emojis_data_file)
             elif action == 'Q':
                 quit_program = True  # Set the flag to True to exit the loop
         except Exception as e:
             carousel_display(carousel, art_frame)  # Display the carousel again
             print(e)
 
-# Run the main function if this file is the entry point
 if __name__ == "__main__":
     main()

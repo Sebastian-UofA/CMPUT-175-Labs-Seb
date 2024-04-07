@@ -157,6 +157,7 @@ class Art:
         time.sleep(1)
 
     def delete_from_multiple(self, prev_emoji, next_emoji):
+        self.clear_screen()
         frame = self.art_pieces[2]
         frame = frame.replace("<>", prev_emoji).replace("()", next_emoji)
         print(frame)
@@ -164,6 +165,7 @@ class Art:
         self.clear_screen()
 
     def delete_from_one(self):
+        self.clear_screen()
         print(self.art_pieces[3])
         time.sleep(1)
         self.clear_screen()
@@ -179,7 +181,7 @@ class Art:
     def add_right_from_multiple(self, prev_emoji, next_emoji):
         self.clear_screen()
         frame = self.art_pieces[5]
-        frame = frame.replace("<>", prev_emoji).replace("()", next_emoji)
+        frame = frame.replace("<>", next_emoji).replace("()", prev_emoji) #
         print(frame)
         time.sleep(1)
         self.clear_screen()
