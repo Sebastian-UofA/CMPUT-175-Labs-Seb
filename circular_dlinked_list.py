@@ -1,8 +1,8 @@
 class Node:
     def __init__(self, data=None):
         self.data = data
-        self.next = None  # Will be updated to point to the next node
-        self.prev = None  # Will be updated to point to the previous node
+        self.next = None  # updated to point to the next node
+        self.prev = None  # updated to point to the previous node
 
     def get_data(self):
         return self.data
@@ -90,7 +90,7 @@ class CircularDoublyLinkedList:
         elif self.size == 1:
             self.head = self.tail = None
         else:
-            # If there are more than one nodes
+            # If there are more than one node in the list
             self.head.prev.next = self.head.next
             self.head.next.prev = self.head.prev
             self.head = self.head.next  # Move head to the next node

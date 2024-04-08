@@ -142,8 +142,8 @@ class Art:
             os.system('clear')
 
     def display_multiple_items(self, prev_emoji, current_emoji, next_emoji):
-        # Assuming your art frame string has unique placeholders for previous, current, and next emojis
-        # For example: "<>  ()  (())"
+        # art frame string has placeholders for previous, current, and next emojis
+        # For example: "<>  ()  ,."
         frame = self.art_pieces[0]
         frame = frame.replace("<>", prev_emoji).replace("()", current_emoji).replace(",.", next_emoji)
         print(frame)
