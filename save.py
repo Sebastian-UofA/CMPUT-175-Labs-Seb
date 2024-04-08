@@ -6,9 +6,6 @@ from art import Art
 
 
 def clear_screen():
-    '''
-    clears the screen based on the operating system
-    '''
     if os.name == 'nt':
         os.system('cls')
     else:
@@ -16,56 +13,68 @@ def clear_screen():
 
 def load_json(filename):
     """
-    Loads data from a JSON file.
-
-    Parameters:
-    - filepath (str): Path to the JSON file.
-
-    Returns:
-    - dict/list: Data loaded from the JSON file.
+    Load JSON from a file
     """
     with open(filename, 'r', encoding='utf-8') as file:   #first takes a filename as input, opens the file, and loads its contents as JSON formatted string into a python dictionary
         data = json.load(file)
     return data 
 
 def emoji_dict(json_data):
-    '''
-    Loads emoji data from a JSON file and creates a dictionary for lookup of emoji.
+    """
+    Loads emoji data from a JSON file and creates a dictionary for easy lookup.
+
+    This function reads a JSON file containing emoji information and converts it into
+    a dictionary structure where each key is an emoji name, and its value is the corresponding
+    emoji symbol. The function is designed to facilitate quick access to emoji symbols
+    based on their names.
 
     Parameters:
     - filepath (str): The path to the JSON file containing emoji data.
 
     Returns:
     - dict: A dictionary where keys are emoji names (str) and values are emoji symbols (str).
-    '''
+    """
     emoji_dict = {}
     for category in json_data:
         for name, character in category["emojis"].items():
             emoji_dict[name] = character
     return emoji_dict
 
-def get_emoji(emoji_name, emoji_dict):
-    '''
-    Retrieves the symbol for a given emoji name from the emoji dictionary.
+def get_emoji(emoji_name, emoji_data):
+    """
+    Retrieves the symbol for a given emoji name from the emoji data. If the exact name
+    isn't found, it suggests the closest match using the Levenshtein distance.
+
     Parameters:
     - emoji_name (str): The name of the emoji to look up.
-    - emoji_data (dict): The dictionary containing emoji names as keys and their symbols as values.
+    - emoji_data (dict): The dictionary containing emoji information.
 
     Returns:
-    - str: The symbol of the emoji if found; otherwise, returns "Emoji not found."
-    '''
-    return emoji_dict.get(emoji_name, "Emoji not found")
+    - str: The symbol of the emoji if found or confirmed by the user; 
+           otherwise, indicates that the emoji wasn't found.
+    """
+
+    # Try to find an exact match first
+    for category in emoji_data:
+        if emoji_name in category["emojis"]:
+            return category["emojis"][emoji_name]
+
+    # If no exact match, find the closest match
+    closest_name, _ = find_closest_emoji(emoji_name, emoji_data)
+    if closest_name:
+        confirmation = input(f"Did you mean '{closest_name}'? (Y/N): ").strip().lower()
+        if confirmation == 'y':
+            for category in emoji_data:
+                if closest_name in category["emojis"]:
+                    return category["emojis"][closest_name]
+        else:
+            return "Operation cancelled by user."
+    return "Emoji not found."
+
 
 def find_object(emoji_dict):
     '''
-    Searches for and retrieves the emoji data by name.
-
-    Parameters:
-    - json_data (list): The loaded list of emoji data from JSON.
-    - name (str): The name of the emoji to find.
-
-    Returns:
-    - dict: The emoji data if found; None otherwise.
+    A function to find the object to be added to the circular doubly-linked list.  
     '''
     print('What do you want to add?')
     emoji_name = input().lower().strip()
@@ -78,20 +87,45 @@ def find_object(emoji_dict):
         return None
     return emoji
 
+def levenshtein_distance(s1, s2):
+    if len(s1) < len(s2):
+        return levenshtein_distance(s2, s1)
+
+    if len(s2) == 0:
+        return len(s1)
+
+    previous_row = range(len(s2) + 1)
+    for i, c1 in enumerate(s1):
+        current_row = [i + 1]
+        for j, c2 in enumerate(s2):
+            insertions = previous_row[j + 1] + 1
+            deletions = current_row[j] + 1
+            substitutions = previous_row[j] + (c1 != c2)
+            current_row.append(min(insertions, deletions, substitutions))
+        previous_row = current_row
+    
+    return previous_row[-1]
+
+def find_closest_emoji(input_name, emoji_data):
+    closest_name = None
+    min_distance = float('inf')
+    
+    for category in emoji_data:
+        for emoji_name in category['emojis']:
+            distance = levenshtein_distance(input_name, emoji_name)
+            if distance < min_distance:
+                min_distance = distance
+                closest_name = emoji_name
+                
+    return closest_name, min_distance
+
 
 def new_node(carousel, emoji_dict, carousel_capacity, art_frame):
     '''
-    Adds a new node with the given data to the carousel.
-
-    Parameters:
-    - carousel (CircularDoublyLinkedList): The carousel to which the node will be added.
-    - data (str): The data to be stored in the new node.
-
-    Returns:
-    - None
+    A function that handles adding new nodes into the circular doubly-linked list. 
     '''
     if carousel.get_size() >= carousel_capacity:
-        print('You cannot add emojis! Carousel is Full. delete an emoji to add a new one.')
+        print('The carousel is at full capacity. Please delete a frame before adding a new one.')
         time.sleep(2)
         clear_screen()
         return 
@@ -127,27 +161,21 @@ def new_node(carousel, emoji_dict, carousel_capacity, art_frame):
         if new_pos == 'left':
             prev_emoji = carousel.head.get_prev().get_data()
             current_emoji = carousel.head.get_data()
-            # pass the prev_emoji and current_emoji for left addition
-            art_frame.add_left_from_multiple(prev_emoji, current_emoji) 
+            # Only pass the prev_emoji and current_emoji for left addition
+            art_frame.add_left_from_multiple(prev_emoji, current_emoji)  # Assuming similar pattern for left addition
             carousel.add_node_left(emoji)
             
         else:
             prev_emoji = carousel.head.get_prev().get_data()
             current_emoji = carousel.head.get_data()
-            # pass the prev_emoji and current_emoji for right addition
+            # Only pass the prev_emoji and current_emoji for right addition
             art_frame.add_right_from_multiple(prev_emoji, current_emoji)
             carousel.add_node_right(emoji)
             
 
 def delete_node(carousel, art_frame):
     '''
-    Deletes the current node in the carousel.
-
-    Parameters:
-    - carousel (CircularDoublyLinkedList): The carousel object.
-
-    Returns:
-    - None
+    A function that handles deleting nodes from the circular doubly-linked list.
     '''
     if carousel.get_size() == 0:
         print("The carousel is empty. There's nothing to delete.")
@@ -174,13 +202,7 @@ def delete_node(carousel, art_frame):
 
 def display_info(carousel, json_data):
     '''
-    Displays information about the current node in the carousel.
-
-    Parameters:
-    - carousel (CircularDoublyLinkedList): The carousel containing the node.
-
-    Returns:
-    - None
+    A function that displays information about the current node in the circular doubly-linked list.
     '''
     current_emoji = carousel.head.get_data()
     for category in json_data:
@@ -188,20 +210,13 @@ def display_info(carousel, json_data):
             print(f'Name: {list(category["emojis"].keys())[list(category["emojis"].values()).index(current_emoji)]}')
             print(f'Symbol: {current_emoji}')
             print(f'Category: {category["class"]}')
-    time.sleep(1)
     input('Press ENTER to continue...')
     clear_screen()
 
 
 def traverse_left(carousel, art_frame):
     '''
-    Moves the current position in the carousel one node to the left.
-
-    Parameters:
-    - carousel (CircularDoublyLinkedList): The carousel to traverse.
-
-    Returns:
-    - None
+    A function that handles traversing left in the circular doubly-linked list. 
     '''
     if carousel.get_size() > 0:
         # Get the emojis for the nodes before and after moving left
@@ -213,13 +228,7 @@ def traverse_left(carousel, art_frame):
 
 def traverse_right(carousel, art_frame):
     '''
-    Moves the current position in the carousel one node to the right.
-
-    Parameters:
-    - carousel (CircularDoublyLinkedList): The carousel to traverse.
-
-    Returns:
-    - None
+    A function that handles traversing right in the circular doubly-linked list. 
     '''
     if carousel.get_size() > 0:
         # Get the emojis for the nodes before and after moving right
@@ -229,13 +238,6 @@ def traverse_right(carousel, art_frame):
         art_frame.move_right(prev_emoji, next_emoji)  # Pass the emojis to move_right()
 
 def get_input(carousel):
-    '''
-    Prompts the user for an action command. checks if the input is valid.
-
-    Returns:
-    - str: The action command entered by the user.
-    '''
-
     allowed_actions = ['L', 'R', 'ADD', 'DEL', 'INFO', 'Q']
     is_valid_input = False  # Flag to track if input is valid
     user_input = ""
@@ -259,7 +261,7 @@ def get_input(carousel):
             print('    DEL: Delete an emoji frame')
             print('    INFO: Retrieve info about the current frame')
             print('    Q: Quit the program')
-        user_input = input('>> ').upper().strip()
+        user_input = input().upper()
 
 
         if user_input in allowed_actions:
@@ -276,17 +278,11 @@ def get_input(carousel):
 
 def carousel_display(carousel, art_frame):
     '''
-    Displays the entire carousel, highlighting the current node.
-
-    Parameters:
-    - carousel (CircularDoublyLinkedList): The carousel to display.
-
-    Returns:
-    - None
+    A function that displays the carousel and all the items within it at all times.
     '''
 
     if carousel.get_size() == 0:
-        # nothing displayed
+        # Display an empty carousel or a welcome message
         art_frame.initialization()
     elif carousel.get_size() == 1:
         # Display carousel with one item
@@ -302,9 +298,6 @@ def carousel_display(carousel, art_frame):
 
 
 def main():
-    '''
-    main function to run the program, includes the main loop for the carousel program
-    '''
     emojis_data_file = load_json("emojis.json") 
     emojis_dict = emoji_dict(emojis_data_file) 
     art_frame = Art()
