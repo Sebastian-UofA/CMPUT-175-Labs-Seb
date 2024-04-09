@@ -167,10 +167,10 @@ def findMaxKey(tree):
     '''       
     if tree is None:
         return None
-    elif tree.getRight() is None: 
+    elif tree.getRight() is None: # If the current node's right child is None, we've found the maximum value
         return tree.getKey()
     else:
-        return findMaxKey(tree.getRight())
+        return findMaxKey(tree.getRight()) # If the current node has a right child, the function recursively calls itself with the right child of the current node, moving closer to the maximum value.
 
 
 ################################################################################
